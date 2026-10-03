@@ -1,0 +1,29 @@
+NORM-EXCESS RESOLUTION 2026-08-24 (norm_excess.py; verdicts pre-registered in header)
+
+GATE: all recorded raw numbers reproduced exactly (medians 3.126/3.103 real,
+3.113/3.269 null; |dnorm| ratio 0.811; sd ratio 0.693; freq rhos -0.068/-0.571).
+
+MODEL: f(log10 count)->norm fit on null half A (260,832 obs, R^2=0.262).
+Mechanical pred median: real -0.018, null +0.096 (mass artifact confirmed).
+
+FLOOR: excess sd real 0.4485 vs held-out null 0.3162 -> RATIO 0.705
+  => INTERMEDIATE (pre-registered: <=0.70 survives, >=0.90 dead).
+  The raw 0.693 "pass" was partly the pseudo-year mass artifact.
+  Location effect survives: real excess median -0.027 vs null +0.036
+  (real norms decline ~0.06 beyond mechanical while null grows) --
+  population-level fact only, not a per-word detector.
+
+FREQ: rho(excess_real, log_freq) = +0.109 (clean-ish).
+
+VALIDITY: freq-partial rho(mean norm, Brysbaert conc) = +0.086, n=25,131.
+  Right sign, but 3-4x weaker than TN2014 (-0.263/-0.334). Weak instrument.
+
+EXPLORATORY excess x drift: real overall -0.104, fm-decile mean -0.053.
+  NULL REFERENCE (excess_drift_nullref.py): overall -0.094, fm-decile mean
+  -0.127, more negative than real in 8/10 bins => DEAD, same null-exceeds-real
+  signature as TN x drift. excess x n_senses partial = +0.012 => nothing.
+
+BOTTOM LINE: with the mass correction the norm candidate lands intermediate at
+best; every downstream use (content validity, drift association) is inside the
+noise floor. The last open geometric thread is closed. Do not seed-ensemble to
+chase a 0.705.

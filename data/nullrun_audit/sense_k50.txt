@@ -1,0 +1,50 @@
+building k=50 KNN (reuses cached vectors.npy; ~1 min/year)
+[driftcache] knn 2012 (72565 words) in 63.0s
+[driftcache] knn 2013 (73559 words) in 62.4s
+[driftcache] knn 2014 (73825 words) in 62.6s
+[driftcache] knn 2015 (73749 words) in 63.6s
+[driftcache] knn 2016 (73690 words) in 56.1s
+[driftcache] knn 2017 (73705 words) in 63.8s
+[driftcache] knn 2018 (73372 words) in 73.2s
+
+==========================================================================================
+k = 25   (top-25 of the k=50 sweep)
+==========================================================================================
+feature                thr=0.55     thr=0.62      thr=0.7
+nclust_mean             +0.1954      +0.1943      +0.1488
+dommass_mean            -0.2748      -0.3251      -0.3130
+nclust_change           +0.0535      -0.0380      -0.1119
+dommass_change          -0.0079      +0.0785      +0.1076
+dommass_slope           -0.1196      -0.0554      -0.0235
+
+  threshold sensitivity of dommass_change:
+    thr 0.55 vs 0.62: rho +0.7207  sign agree 69.2%  (excl. ties 86.1%, n=49,959)
+    thr 0.55 vs 0.7: rho +0.5605  sign agree 56.2%  (excl. ties 81.7%, n=44,822)
+    thr 0.62 vs 0.7: rho +0.7569  sign agree 68.3%  (excl. ties 87.0%, n=51,304)
+    thr=0.55: mean=-0.0873 median=-0.0400 sd=0.2823 nclust median=4.29  zero-change 23.7%
+    thr=0.62: mean=-0.0721 median=-0.0400 sd=0.3033 nclust median=8.71  zero-change 15.7%
+    thr=0.7: mean=-0.0431 median=+0.0000 sd=0.2937 nclust median=15.43  zero-change 18.8%
+
+==========================================================================================
+k = 50   (top-50 of the k=50 sweep)
+==========================================================================================
+feature                thr=0.55     thr=0.62      thr=0.7
+nclust_mean             +0.2536      +0.2455      +0.1910
+dommass_mean            -0.3665      -0.4147      -0.3948
+nclust_change           +0.0693      -0.0350      -0.1188
+dommass_change          +0.0135      +0.0913      +0.1063
+dommass_slope           -0.1151      -0.0485      -0.0296
+
+  threshold sensitivity of dommass_change:
+    thr 0.55 vs 0.62: rho +0.7612  sign agree 73.7%  (excl. ties 85.6%, n=57,368)
+    thr 0.55 vs 0.7: rho +0.6171  sign agree 62.5%  (excl. ties 80.6%, n=52,980)
+    thr 0.62 vs 0.7: rho +0.7890  sign agree 71.8%  (excl. ties 85.7%, n=56,973)
+    thr=0.55: mean=-0.0939 median=-0.0400 sd=0.2908 nclust median=8.14  zero-change 14.9%
+    thr=0.62: mean=-0.0698 median=-0.0200 sd=0.3035 nclust median=16.71  zero-change 10.1%
+    thr=0.7: mean=-0.0384 median=+0.0000 sd=0.2909 nclust median=30.00  zero-change 14.0%
+
+  examples (k=50, thr=0.62): dommass_change
+    fam       +0.540
+    spiked    -0.120
+    chief     +0.060
+    husband   +0.420

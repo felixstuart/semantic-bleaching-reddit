@@ -1,0 +1,25 @@
+=== participation ratio: real vs time-shuffled null (k=25, dim=100) ===
+  real: 71,653 words
+  null(iter15): 74,215 words
+  shared: 71,616
+
+metric                    real median [IQR]              null median [IQR]    freq rho real     null
+pr_first          14.3468 [13.2310,15.2539]      14.3302 [13.1996,15.2191]          -0.2803  -0.2222
+pr_last           14.0483 [12.8186,15.0376]      13.9806 [12.7325,14.9602]          -0.3528  -0.3099
+pr_mean           14.0121 [13.0315,14.6978]      13.9795 [12.9408,14.7174]          -0.4315  -0.3503
+pr_change          -0.3206 [-1.3311,0.6860]       -0.3569 [-1.2664,0.5713]          -0.0845  -0.1181
+pr_slope           -0.0298 [-0.1773,0.1151]       -0.0326 [-0.1508,0.0867]          -0.0225  -0.0989
+
+  PR range is [1, k] = [1, 25]
+  |pr_change| mean: real 1.3249  null 1.2238  ratio 0.924
+  sd: real 1.7247  null 1.5961  ratio 0.925
+
+=== raw vector norms (driftcache normalises; read from the text dumps) ===
+  real: norm2012 median 3.126  norm2018 median 3.103
+        Spearman(norm2012, log_freq) = +0.3929
+        Spearman(norm_change, log_freq) = -0.0691
+        |norm_change| mean 0.4333  sd 0.6851
+  null: norm2012 median 3.113  norm2018 median 3.269
+        Spearman(norm2012, log_freq) = +0.4810
+        Spearman(norm_change, log_freq) = -0.5719
+        |norm_change| mean 0.3514  sd 0.4749

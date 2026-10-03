@@ -1,0 +1,180 @@
+n-BIAS AUDIT OF THE NEIGHBOURHOOD-GEOMETRY METRICS - 2026-08-24
+Prompted by: "hold content constant, vary n, plot the metric against n."
+
+SUBSTRATE. Retraining on subsampled years is not runnable here (pairs corpus
+is on RICK, one retrain per n). Not needed: the pseudo-year null space already
+is that experiment. Each word's 7 pseudo-year vectors are 7 independent
+estimates of the SAME distribution at 7 different n. Content is constant by
+construction, so within-word dependence on n is pure artifact. Within-word
+contrast also removes the word-identity confound that cross-word n-binning has.
+
+0. WHAT THE NULL ACTUALLY HOLDS FIXED (checked, not assumed)
+   per-year PAIR TOTALS: null/real = 0.997-1.001 in every year. Matched.
+   per-(word,year) counts: exact match on 0.27% of keys, median |ratio-1| 0.25.
+   NOT matched.
+   Null per-word year-profiles are near-proportional to the corpus bin share
+   (median TV distance 0.0051, min/max year-share ratio 0.961); real profiles
+   are 11x more uneven (TV 0.0567, msr 0.664; 23.3% of real words below msr
+   0.5 vs 0.08% of null words).
+   => the null controls the SHARED corpus n-curve (2012 = 6.3% of pairs, 2014
+   = 17.6%), and does NOT control per-word n-profile. Under-controls, not over.
+
+1. WITHIN-WORD n-RESPONSE (n_response.py, 74,215 words, verdicts pre-registered)
+   metric   median rho(metric, n)   % neg   same-sign freq deciles   verdict
+   dev        -0.4643               85.2%          10/10            N-BIASED
+   step       -0.5429               84.6%          10/10            N-BIASED
+   chain      +0.2571               71.1% pos      10/10            PARTIAL
+   radius/TN  +0.0286               48.5%           6/10            CLEAN
+   Within-word-centred medians are monotone across all 7 n bins for dev, step
+   and chain (n_response_curve.csv). step falls -0.0088 -> -0.00004 from the
+   1.2k-5k bin to the >5M bin; chain rises +0.0020 -> +0.0002.
+   => confirmed, and monotone in a single figure. TN is the exception: its
+   frequency correlation is between-word content, not estimation noise.
+
+2. chain_slope IS DEAD (chain_slope.py)
+   median chain_slope   REAL +0.00003 (50.1% positive)
+                        NULL +0.00250 (64.5% positive)   null/real = 77x
+   median step_slope    REAL -0.00086   NULL -0.00491    null/real = 5.7x
+   mean chain by year, both spaces, jumps 2012->2013 then declines - the thin
+   2012 bin, not a trajectory.
+   => "chaining increases over time" is entirely mechanical; the null exceeds
+   the real signal. No downsample needed to kill it, this is cheaper.
+
+3. dir_pers EXCESS SURVIVES ANYWAY (excess_under_n_control.py, freq_check.py)
+   The n channel that inflates excess is edge-thinness, and it is IDENTICAL in
+   both arms (excess x edge-thinness, freq-partial: real -0.0593, shuffled
+   -0.0606), so the real-minus-null contrast removes it.
+   Per-word unevenness does NOT inflate excess - it suppresses it
+   (excess x msr real -0.1076, shuffled +0.0035).
+   Within frequency decile, shuffled/real ratio = 0.19-0.44, median 0.35,
+   under the pre-registered 0.50 bar in all 9 testable deciles.
+   CAUTION, recorded: the raw evenness filter appears to strengthen excess
+   (+0.0595 -> +0.0915 at msr>=0.7 -> +0.1384 at msr>=0.9) but this is PURE
+   FREQUENCY SELECTION - median log_freq goes 3.60 -> 4.88 -> 6.29, and within
+   decile even words are LOWER than uneven ones (median -0.0054, 8/9 deciles).
+   Do not quote the filtered numbers as a strengthening.
+   Conservative statement: median excess above the mechanical floor ~ +0.042.
+
+4. CONSEQUENCE FOR THE POSITION WORK
+   edgeness is a mean over occurrences: n moves its sampling variance, not its
+   expectation. Measured here: the only geometry metric that behaves that way
+   is radius/TN. dev, step and chain are all biased in n. That is an argument
+   for the position measures being primary that does not depend on the
+   theoretical case for either.
+
+================================================================================
+5. RELIABILITY OF PER-WORD excess (excess_reliability.py) - 2026-08-25
+Split-half on one space, interleaved years, permutation baselines ENUMERATED
+exactly (4! and 3!), so no Monte-Carlo error enters the estimate.
+  4/3 split  half-half +0.2942  SB +0.4547   freq-partialled +0.1580  SB +0.2729
+  3/3 split  half-half +0.2329  SB +0.4147   freq-partialled +0.0815  SB +0.1716
+  by floor (pairs, freq-partialled SB): 0 -> 0.273 | 1200 -> 0.427 |
+                                        5000 -> 0.537 | 20000 -> 0.590
+CAVEAT, must be stated: interleaving years changes the TIME STEP of a sequence
+statistic, so the halves are not parallel forms of the 7-year measure - each
+half correlates with the full statistic at only +0.235 / +0.156. Spearman-Brown
+assumes parallel forms and is violated in a known direction. LEAD WITH THE
+FLOOR-GRADED TREND (monotone rise with n, as it should be); treat 0.273 as an
+approximation, not a point estimate.
+
+ATTENUATION BOUND: max observable rho with an external measure of reliability
+r_y is sqrt(r_x * r_y), NOT r_x. Against Brysbaert (~0.90) the ceiling is 0.496.
+Effects measured, as % of that ceiling: content leg high-drift 41%, all-words
+4%, low-drift 6%, SUBTLEX 1%, Percent_known 2%, Wiktionary senses 8%.
+A noise floor cannot produce 1-8% and 41% from the same instrument on the same
+words => the standardness nulls are real absences.
+
+6. BAND AUDIT of the +0.2032 high-drift content effect (band_audit.py)
+  NULL-SPACE REDRAW - rho(brysbaert, excess|freq) by freq-matched drift band:
+    real  +0.0216  +0.0663  +0.1019  +0.1427   (all / top40 / top20 / top10)
+    null  -0.0086  +0.0008  +0.0132  +0.0073
+    => FLAT in the null. The band split does NOT manufacture the gradient.
+  ENTANGLEMENT - rho(drift, excess): raw real -0.2993 vs null -0.0712, but
+    freq-partialled real +0.0529 vs null +0.0489. Nearly identical => the
+    residual coupling is purely geometric and small. Banding is on freq-matched
+    drift percentile, so the frequency-carried part is already handled. A +0.05
+    coupling cannot drive a +-0.3 collider gradient.
+  FIRST-YEAR SHARE inside the top-20% band (quartiles of fy_share):
+    +0.0677 / +0.1636 / +0.1225 / +0.0208  (unstratified +0.1019, n~1,199 each)
+    The THINNEST-first-year quartile is BELOW the pooled value, so the
+    mechanical floor is not inflating the effect. Heterogeneity across
+    quartiles is ~5 SE and unexplained - flag it, do not smooth it over.
+  FLOOR - report BOTH:
+    floor 0     n=25,130  +0.0216 +0.0663 +0.1019 +0.1427
+    floor 1200  n=11,140  +0.0729 +0.1528 +0.2071 +0.2971
+    Floor 1200 discards 55.7% of words and 59.8% of the top-20% drift band.
+    Discarded vs kept: log_freq 3.62/4.97, concreteness 3.030/2.860,
+    drift 0.354/0.168 - i.e. exactly the emergent low-frequency high-content
+    class. THE HIGH-RELIABILITY VERSION ANSWERS A QUESTION ABOUT ESTABLISHED
+    VOCABULARY and must be labelled that way.
+    Disattenuated, the gain exceeds pure attenuation recovery (0.206 at floor 0
+    vs 0.334 at floor 1200), so part of it is selection, not reliability.
+
+7. edge_slope RELIABILITY - detrend test is VACUOUS, and the earlier
+   comparison to excess was UNFAIR (edge_reliability.py)
+  Year-detrending subtracts a per-year CONSTANT, so every word's slope shifts
+  by the same amount and every rank correlation is unchanged. Identity, not a
+  result: a corpus-common sentence-length drift CANNOT inflate a between-word
+  reliability estimate. Confirmed to 4 dp at every floor.
+  The genuine version of the worry is PER-WORD length trajectory, which cannot
+  be tested - sentpos_5sub.parquet has no length column. Needs sentpos re-run
+  on the mini emitting mean sentence length per (word,year). Mechanical basis:
+  under uniform placement E[edgeness] falls with L (0.300 at L=5, 0.278 at
+  L=10, 0.263 at L=20).
+  LIKE-FOR-LIKE (both raw SB; excess floors are PAIRS, ~8 pairs/token):
+    edge_slope  floor 100 tok  0.4542 | 250 tok  0.5917 | 1000 tok  0.7667
+    excess      floor 0 pairs  0.4547 | 1200 (~150 tok) 0.5333 | 5000  0.5404
+  => at comparable exposure the two are COMPARABLE, not 3x apart. The earlier
+  "0.273 vs 0.767" compared excess-unfiltered-freq-partialled against
+  edge_slope-at-floor-1000-raw. Retract the "one third as reliable" claim.
+  What does survive: edge_slope reliability is unchanged by freq-partialling
+  (0.7667 -> 0.7661) because it barely loads on frequency; excess loses a third
+  (0.4547 -> 0.2729). Position-primary rests on FREQUENCY INDEPENDENCE and the
+  non-embedding outcome leg, NOT on reliability.
+
+DATA LOSS WARNING: /private/tmp was reaped 2026-08-25 00:12 (disk 96% full).
+nullvec/counts.words.vocab and null_iter1/6/9.words are GONE. null_iter15.words
+(500 MB) is the ONLY surviving copy of the pseudo-year null space and is still
+in /private/tmp. Reproducing it costs a full retrain.
+
+================================================================================
+8. CORRECTION TO SECTION 6 - THE BAND AUDIT WAS RUN ON THE WEAKER TEST
+   (edge_spearman.py + conditioner-swap run, 2026-08-25)
+
+Two different tests were conflated:
+  TEST A (what section 6 ran): null outcome banded by null drift. Asks whether
+    the pipeline invents a gradient in a world with no content signal. It does
+    not (+0.0132 at top20%). Necessary, not sufficient.
+  TEST B (sharper): REAL outcome banded by NULL drift. Holds the outcome fixed
+    and swaps only the conditioner, so it isolates what the band split alone
+    contributes. This is the test that matters and section 6 did not run it.
+
+TEST B, excess (rho(brysbaert, excess | freq)):
+  floor 0     real drift  +0.0216 +0.0663 +0.1019 +0.1427
+              NULL drift  +0.0216 +0.0531 +0.0601 +0.0578
+  floor 1200  real drift  +0.0729 +0.1528 +0.2071 +0.2971
+              NULL drift  +0.0729 +0.1216 +0.1249 +0.1746
+  => roughly HALF the band gradient is structural. Residual (real - null) at
+  top20%: +0.042 (floor 0), +0.082 (floor 1200). Still positive, still grows
+  with band and with floor, but the headline +0.2032 must be reported as
+  ~+0.08 net of the conditioning structure. NOT the clean pass claimed in 6.
+
+TEST B, edge_slope (rho(brysbaert, edge_slope | freq)):
+  floor 250   real drift  -0.1185 -0.0708 -0.0482 -0.0304
+              NULL drift  -0.1185 -0.0844 -0.0189 +0.0371
+  floor 1000  real drift  -0.1244 -0.0377 -0.0265 +0.0100
+              NULL drift  -0.1244 -0.0856 +0.0020 +0.0779
+  => the NULL conditioner reproduces AND EXCEEDS the decay. The two-regime
+  gradient for edge_slope is MANUFACTURED BY THE BAND SPLIT. This is the second
+  independent strike (Hansard non-replication was the first). Treat the
+  two-regime finding as dead, not merely unreplicated.
+
+Sanity: the "all" band is identical across conditioners by construction
+(+0.0216 / -0.1185), confirming the swap touches only the banding.
+
+WHAT IS UNAFFECTED: the unconditioned correlations. rho(brysbaert, edge_slope |
+freq) = -0.1163 / -0.1185 / -0.1244 / -0.0634 at floors 100/250/1000/5000, no
+banding involved. That is the paper's result and no conditioning artifact
+touches it.
+rho(edge_slope, excess) freq-partialled: -0.0155 / -0.0402 / -0.0801 / -0.0855
+at those floors - the two outcomes remain near-orthogonal at every floor.

@@ -1,0 +1,89 @@
+MAGNITUDE-CARRYING SHAPE STATISTICS vs NULL - 2026-08-24 (step_profile.py)
+Design: shape info via MATCHING (freq decile x path-length decile cells),
+never division. Verdicts pre-registered in script header.
+
+RAW MATCHED-CELL RESULT (before profile control):
+  max_step +0.230 (100% consistent)  step_sd +0.325 (100%)  spike +0.204 (82%)
+  gap12 +0.075 (69%) -> DEAD
+  => real trajectories spikier than noise at matched total magnitude.
+
+YEAR-PROFILE EVENNESS CONTROL (real words have uneven yearly counts -> thin
+years -> fake spikes; null is near-proportional by construction. Filter: min
+year-share ratio >= 0.5 / 0.7 in both spaces):
+  spike:    +0.204 -> +0.076 (0.68) -> +0.019 (0.52)  = WAS the artifact, DEAD
+  max_step: +0.230 -> +0.163 (0.85) -> +0.126 (0.90)  = INTERMEDIATE
+  step_sd:  +0.325 -> +0.202 (1.00) -> +0.141 (0.97)  = INTERMEDIATE
+  CAVEAT both ways: the control overcorrects (even-profile words are the
+  stable ones; genuine change co-occurs with growth), so the residual
+  ~0.13-0.14 is a floor-ish estimate but cannot be called clean survival.
+  Growth vs change cannot be split observationally (lowkey/fam lesson).
+
+DIR_PERS (mean cos of consecutive displacement vectors; mechanically ~-0.5
+under noise, less negative if change is directional):
+  real -0.4306 vs null -0.4769; gap positive in 10/10 freq deciles and GROWS
+  with frequency (+0.026 rare -> +0.112 frequent) = signal-under-attenuation
+  signature, NOT noise (noise inflates at the rare end). UNCHANGED by the
+  evenness control (+0.0356; mass artifact works against it). Pre-registered
+  verdict INTERMEDIATE (median +0.034 < 0.05 bar), but top-decile +0.11 is
+  the first robust real-null residual any shape statistic has shown.
+  This is the continuous cousin of step_chain's stable ~19% residual.
+
+CONTENT LEG: pred_conc x dir_pers real partial +0.031 vs null -0.023 -> no
+support for content->shape. Shape has a pulse; the hypothesis chain does not.
+
+DECISIVE NEXT TEST (free, no training): within-word ORDER-permutation null
+for dir_pers - permute each word's 7 year vectors' order, recompute; keeps
+the mechanical -0.5 and each word's own noise, destroys temporal ordering.
+Pre-register the bar BEFORE running.
+
+ORDER-PERMUTATION NULL 2026-08-24 (orderperm.py; verdicts pre-registered)
+Per word: dir_pers(observed year order) vs K=100 random orderings of the SAME
+7 vectors. Keeps noise + mechanical -0.5 exactly; destroys only ordering.
+  REAL:     excess median +0.0595, 85.9% words positive, gradient +0.033
+            (rare) -> +0.121 (frequent), 10/10 deciles positive.
+  SHUFFLED: +0.0178 (ratio 0.30) - nonzero for a known mechanical reason
+            (noisy thin-2012 vector sits at the sequence EDGE in observed
+            order; permutation moves it inward where it does more
+            anticorrelation damage). Bounded well under the 0.50 bar.
+  VERDICT: SURVIVES - first pre-registered survival of any shape statistic.
+
+FACE VALIDITY (freq-matched excess percentile):
+  Known changers rank high: trump 99.8, salty 99.7, ghost 99.5, discord 99.1,
+  rookie 97.3, cringe 97.1, uber 96.8, fam 95.6, git 94.9, chief 94.0.
+  spiked 2.6th / neutrality 13.2th -> LOW orderedness = noise OR single
+  abrupt jump; flags on two July candidates (new flag on spiked).
+  Bottom of scale = episodic-topical vocab (olympics, medals, crown) that
+  oscillates rather than travels. Top of mid-band = platform-evolution vocab.
+  => excess is a trajectory-TYPE measure: gradual/directed vs abrupt-or-noise.
+
+CONTENT->SHAPE, tested with the validated instrument (EXPLORATORY, post hoc):
+  rho(pred_conc, excess | freq) restricted by fm drift percentile:
+    all +0.022 / top40% +0.068 / top20% +0.113 / top10% +0.166 (n=4,269)
+  SHUFFLED-ARM CONTROL on the SAME word subsets: -0.021/-0.021/-0.009/+0.007
+  -> estimation-quality rival (concrete->tighter contexts->better vectors)
+  RULED OUT; gradient exists only where ordering is real.
+  SIGN NOTE: opposite the entrenchment prediction in TNPosPredictor cell 0
+  (which implies low-content -> gradual extension -> ordered). Observed:
+  among movers, CONCRETE words travel directedly; low-content movers change
+  incoherently/abruptly. If it confirms, it is a discovery, not a confirmation.
+CONFIRMATION PATH: pre-register the same test on the 3-sub space (order-
+permutation null is self-contained - no null retrain needed). Suggested bar:
+top-20% band rho >= +0.08 with monotone band gradient.
+
+3-SUB PRE-REGISTERED CONFIRMATION 2026-08-24 (orderperm_3sub.py)
+Bar (registered before running): top-20%-drift band rho >= +0.08, monotone.
+  bands: all +0.1019 / top40 +0.1193 / top20 +0.1496 / top10 +0.1767
+  VERDICT: CONFIRMED (top20 ~2x the bar; every band above the 5-sub values).
+Sanity replicated: excess median +0.0437, 84.0% positive, rising freq
+gradient; fam 95.9 / chief 97.9 / salty 99.9 / ghost 92.3 / discord 95.1.
+neutrality LOW again (21.0 vs 13.2 on 5-sub) - flag replicates.
+spiked 54.1 (vs 2.6 on 5-sub) - flag does NOT replicate; space-sensitive,
+keep both numbers, no strong claim either way.
+Caveats on record: corpora share 3 subreddits (replication across training
+runs + partial data, not fully independent); predictor is the 5-sub
+imputation; no shuffled arm on 3-sub (estimation-quality rival was ruled out
+on 5-sub only).
+STATUS: content->trajectory-type is now a pre-registered, replicated,
+control-passing finding WITHIN Reddit: among words that moved, higher
+descriptive content -> more directed/sustained trajectories. Sign is opposite
+the original entrenchment prediction (discovery, not confirmation).

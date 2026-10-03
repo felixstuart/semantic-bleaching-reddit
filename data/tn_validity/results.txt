@@ -1,0 +1,59 @@
+TN AS A CONCRETENESS MEASURE - battery results 2026-08-24 (tn_concreteness.py)
+Sample: 71,653 all-7-year words; 25,131 Brysbaert-covered.
+
+1. VALIDITY (raw / freq-partial): 2012 -0.075/-0.071, 2013 -0.203/-0.205,
+   2014 -0.262/-0.265 (peak), 2015 -0.222, 2016 -0.158, 2017 -0.135,
+   2018 -0.131. tn_mean -0.183 DESPITE SB reliability 0.939 -> averaging
+   dilutes; years measure different things, 2014's advantage is composition.
+2. RELIABILITY: mean inter-year rho 0.686. Disattenuated 2014 validity
+   ~0.32 = the ceiling. TN is weak-moderate at best.
+3. VARIANTS: median-of-25 -0.275 (best simple); k monotone 1->25; ctn50
+   -0.241 (n=16,073); tnwa20k -0.292 but n=5,446 only.
+4. CONFOUNDS: partial(+senses) -0.260, (+length) -0.302 -> NOT polysemy/
+   length/freq in disguise. Freq-decile flat (-0.19..-0.36).
+   WITHIN-POS: Noun tn -0.262 / ctn50 -0.346 (best number in battery);
+   Adj -0.195/-0.050; Verb -0.212/-0.196; Adverb junk.
+5. DENSITY (new lever - null pseudo-years differ only in mass):
+   mass 6.25% -> -0.143; mass >=13.5% -> -0.225..-0.244 (saturates).
+   Real 2014 (-0.265) ~= matched-mass null (-0.239). Real 2016-18
+   (-0.13..-0.16) UNDERPERFORM matched-mass nulls (~-0.23) = temporal
+   composition penalty. 2012 doubly penalized (mass + composition).
+   CROSS-CORPUS REFRAME: Hansard decades ~355M pairs ~= 1.5% of Reddit's
+   23B - far below the lowest null point. The Hansard/GB TN-validity
+   failures are plausibly DENSITY, not register/subreddit structure
+   (GB 1990 = densest decade = only one reaching -0.163, fits).
+   Testable: one low-mass pseudo-year train on the mini.
+   NOTE: applies to TN validity only. The Hansard edge_slope result uses
+   no embedding and its reliability was fine (0.88) - do not conflate.
+6. Conc.SD: nothing (-0.024 after freq+extremity controls).
+7. WHAT TN ACTUALLY MEASURES: topical/contextual tightness, not concreteness.
+   Misses diffuse-but-concrete: idiom-carried objects (iceberg, thorn, chalk,
+   umbrella, maggot, anaconda). Misses tight-but-abstract: evaluative/social
+   vocab that clusters topically (sexism, sanctimonious, ideology, cordiality)
+   + interjections (oh, eh, gosh). Backfill tails: tightest uncovered words
+   are US STATE NAMES (proper nouns read as ultra-concrete - needs name
+   filter); most diffuse uncovered are idiom fragments (merrier, feelers,
+   snowball's, bodes) + acronyms (brb).
+VERDICT: real but weak-moderate instrument on Reddit (~-0.26, ceiling ~0.32);
+group-level noun analyses only (ctn50|nouns -0.35 with name/interjection
+filter); never per-word; validity is mass- and composition-dependent.
+
+CONCRETENESS IMPUTATION 2026-08-24 (concreteness_imputation.py)
+Ridge on the 100-d CONTEXT vector, calibrated on Brysbaert, 5-fold CV by word:
+  CV Spearman 0.824 (alpha=0.1; TN-alone ceiling 0.26, ctn50-alone 0.24).
+  Not frequency: rho(pred, logfreq) -0.088; validity flat +0.79..+0.84 across
+  freq deciles. Within-POS: Noun 0.816, Verb 0.730, Adj 0.697, Adverb 0.418.
+  Failure mode persists but rare: homonyms/idiom-dominant usage (can, course,
+  spur) - arguably rates DOMINANT USAGE, which suits a usage-based study.
+  CV caveat: morphological relatives split across folds inflate rho slightly.
+  Backfill face reads clean (countertop/peels/taser vs shouldn't/abhorrent);
+  slang: doggo 3.87, juul 4.07, tbh 2.84, lowkey 2.87.
+  Output: predicted_concreteness.csv (45,698 words, covered flag).
+
+PAYOFF - pred_conc x edge_slope on the S3 frame:
+  all -0.103 / covered -0.118 / UNCOVERED-BY-BRYSBAERT -0.085 (n=12,548,
+  freq-partial identical). Same-frame references: Brysbaert conc -0.106,
+  ctn50 only +0.067. => pred_conc REPLACES ctn50 as the distributional
+  instrument, and extends the content->route effect to vocabulary no human
+  norms cover. Uncovered leg still needs the within-word permutation null
+  before being quoted.

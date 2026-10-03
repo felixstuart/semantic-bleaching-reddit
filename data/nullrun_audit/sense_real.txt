@@ -1,0 +1,46 @@
+  [sense] 2012: 72,565 words in 14.4s
+  [sense] 2013: 73,559 words in 14.2s
+  [sense] 2014: 73,825 words in 14.5s
+  [sense] 2015: 73,749 words in 13.9s
+  [sense] 2016: 73,690 words in 14.0s
+  [sense] 2017: 73,705 words in 13.7s
+  [sense] 2018: 73,372 words in 14.3s
+  [sense] 71,653 words present in all 7 years
+
+=== FREQUENCY GATE: Spearman vs log_freq, by similarity threshold ===
+feature                thr=0.55     thr=0.62      thr=0.7
+nclust_mean             +0.1954      +0.1943      +0.1488
+dommass_mean            -0.2748      -0.3251      -0.3130
+nclust_change           +0.0535      -0.0380      -0.1119
+dommass_change          -0.0079      +0.0785      +0.1076
+dommass_slope           -0.1196      -0.0554      -0.0235
+
+=== SENSITIVITY: does dommass_change agree across thresholds? ===
+  dommass_change  thr 0.55 vs 0.62: Spearman +0.7207, sign agreement 69.2%
+  dommass_change  thr 0.55 vs 0.7: Spearman +0.5605, sign agreement 56.2%
+  dommass_change  thr 0.62 vs 0.7: Spearman +0.7569, sign agreement 68.3%
+
+  thr=0.55: n=71,653 mean=-0.0873 median=-0.0400 sd=0.2823  nclust median=4.29
+  thr=0.62: n=71,653 mean=-0.0721 median=-0.0400 sd=0.3033  nclust median=8.71
+  thr=0.7: n=71,653 mean=-0.0431 median=+0.0000 sd=0.2937  nclust median=15.43
+
+=== example words: dominant mass 2012 -> 2015 -> 2018 (thr=0.62) ===
+  fam       0.32 0.52 0.36 0.92 0.96 1.00 1.00   change=+0.68
+  spiked    0.36 0.24 0.48 0.20 0.20 0.16 0.12   change=-0.24
+  chief     0.20 0.24 0.32 0.24 0.36 0.32 0.16   change=-0.04
+  husband   0.96 1.00 1.00 1.00 1.00 1.00 1.00   change=+0.04
+
+=== chief 2018 clusters (thr=0.62) ===
+    ['bud', 'bro', 'fam', 'aye']
+    ['cheif', 'keef', 'witchu']
+    ['michael', 'phil', 'jeff']
+    ['administration', 'fbi']
+    ['lieutenant', 'commander']
+    ['juan', 'chelsea']
+    ['officer', 'superintendent']
+    ['papa', 'gabe']
+    ['donny']
+    ['betsy']
+    ['chairman']
+    ['cit']
+    ['dwight']
