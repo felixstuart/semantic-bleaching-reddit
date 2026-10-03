@@ -4,16 +4,13 @@
 
 This repository contains several experiments on semantic bleaching and semantic bleaching trajectories. My guiding hypothesis was that nouns with high descriptive content would bleach through neighborhood detachment rather than sense extension, as Sweetser proposed. This hypothesis was an extension of Hamilton et al.'s 2016 paper "Cultural Shift or Linguistic Drift?", which posits nouns are more likely to undergo irregular cultural shifts compared to other parts of speech, specifically adverbs. Adverbs have been the focus of much work in the field; I focused on the work of Sweetser. 
 
-I validated all the metrics used on a time-shuffled corpus. This null was motivated by Dubossarsky et al.'s 2017 work. BleachingTrajectories notebook demonstrates the value of this exercise--while the results looked very positive initially, the concreteness metric did not pass the time-shuffled null. Additionally, using subreddits introduced significantly more noise than HistWords, particularly for rare words. 
-
-  
-
+I validated all the metrics used on a time-shuffled corpus. This null was motivated by Dubossarsky et al.'s 2017 work. The `BleachingTrajectories` notebook demonstrates the value of this exercise--while the results looked very positive initially, the diffuseness metric did not pass the time-shuffled null. Additionally, using subreddits introduced significantly more noise than HistWords, particularly for rare words. 
 
 ## Work 
 
 TNPosPredictor contains the code and analysis for this hypothesis; I measured concreteness by training a model on Brysbaert et al.'s human concreteness ratings. Drift was measured through excess, a measure of how directionally persistent a word's displacement vector was. Unfortunately, excess had a 0.538 correlation with log frequency. More information about the metric is in the notebook. The concreteness metrics are resistant to frequency confounds, something I struggled to eliminate with other distributional measures; when controlled for frequency, the correlation between the imputed rankings and excess was +0.006 (compared to -0.030). Ultimately, I found no relationship between descriptive content and semantic shift. In fact, nouns moved straighter than adverbs. 
 
-BleachingTrajectories was my first exploration of the hypothesis. I used TN, a measure of neighborhood diffuseness, as a proxy for descriptive content, and a metric to measure a word's chaining. While the trend seemed very well-defined initially, the time-shuffled corpus ended up diffuseness  metric; the numbers were reproduced nearly exactly. 
+BleachingTrajectories was my first exploration of the hypothesis. I used TN, a measure of neighborhood diffuseness, as a proxy for descriptive content, and a metric to measure a word's chaining. While the trend seemed very well-defined initially, the time-shuffled corpus produced nearly the exact same numbers, killing the diffuseness metric. 
 
 VectorExploration documents the first experiments and exploration of the vectors I produced based on three subreddits. I used three metrics, IoU, cosine similarity, and SimLex, a measure of how similar a word is to its synonyms (from Luo et al.). From these metrics, I found the list of words that appeared to be stable and a list of words that seemed to change a lot; this list anchored metric choice later. 
 
@@ -30,22 +27,27 @@ To run any of these notebooks, download the vectors included in the releases. Th
 
 Once you have the vectors, run the following to unzip and move them to the expected locations: 
 
-   `mkdir -p vectors/5sub
-    zstd -d sgns.words.zst      -o vectors/5sub/sgns.words   
-    zstd -d sgns-3sub.words.zst -o vectors/sgns.words`
+```bash
+mkdir -p vectors/5sub
+zstd -d sgns.words.zst      -o vectors/5sub/sgns.words
+zstd -d sgns-3sub.words.zst -o vectors/sgns.words
+```
 
-`BleachingTrajectories` and `TNPosPredictor` use the 5sub space vectors, while `VectorExploration` uses the smaller, 3 subreddit set. `GeometricSignals` uses Hamilton et al.'s vectors, available [here](https://nlp.stanford.edu/projects/histwords/). The decade file should be placed in `./sgns/`. 
+`BleachingTrajectories` and `TNPosPredictor` use the 5sub space vectors, while `VectorExploration` uses the smaller, 3 subreddit set. `GeometricSignals` uses Hamilton et al.'s vectors, available [here](https://nlp.stanford.edu/projects/histwords/). The decade files should be placed in `./sgns/`. 
+
+`TNPosPredictor` also needs the [Brysbaert et al. ratings](https://doi.org/10.3758/s13428-013-0403-5). Save the tab-separated ratings file as `data/brysbaert_concreteness.txt`. 
 
 Both `Hedging` and `SGNSTREmbeddings` use a slightly processed version of the raw corpus; the supporting files aren't included, but the underlying corpus is available from Cornell's ConvoKit. 
-## References
 
-Brysbaert, M., Warriner, A. B., & Kuperman, V. (2014). Concreteness ratings for 40
-thousand generally known English word lemmas. *Behavior Research Methods*, 46(3),
-904–911. https://doi.org/10.3758/s13428-013-0403-5
+## References
 
 Baumgartner, J., Zannettou, S., Keegan, B., Squire, M., & Blackburn, J. (2020). The
 Pushshift Reddit Dataset. *Proceedings of the International AAAI Conference on Web and
 Social Media*, 14(1), 830–839. https://ojs.aaai.org/index.php/ICWSM/article/view/7347
+
+Brysbaert, M., Warriner, A. B., & Kuperman, V. (2014). Concreteness ratings for 40
+thousand generally known English word lemmas. *Behavior Research Methods*, 46(3),
+904–911. https://doi.org/10.3758/s13428-013-0403-5
 
 Chang, J. P., Chiam, C., Fu, L., Wang, A. Z., Zhang, J., & Danescu-Niculescu-Mizil, C.
 (2020). ConvoKit: A Toolkit for the Analysis of Conversations. *Proceedings of SIGDIAL
